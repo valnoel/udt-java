@@ -102,7 +102,7 @@ public class ReceiveFile extends Application{
 				if(r<0)break;
 				total+=r;
 			}
-			long size=decode(sizeInfo, 0);
+			final long size = decode64(sizeInfo);
 			
 			Boolean devNull=Boolean.getBoolean("udt.dev.null");
 			if(devNull){

@@ -155,9 +155,9 @@ public class SendFile extends Application{
 					}
 					System.out.println("[SendFile] name length data: "+sb.toString());
 				}
-				long length=decode(len, 0);
+				final int length = decode(len, 0);
 				if(verbose)System.out.println("[SendFile] name length     : "+length);
-				byte[]fileName=new byte[(int)length];
+				byte[] fileName = new byte[length];
 				bb.get(fileName);
 
 				File file=new File(new String(fileName));

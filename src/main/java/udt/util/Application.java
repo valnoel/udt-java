@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Application implements Runnable {
-	
+
 	protected static boolean verbose;
 
 	protected static String localIP=null;
@@ -21,8 +21,8 @@ public abstract class Application implements Runnable {
 			Logger.getLogger("udt").setLevel(Level.OFF);
 		}
 	}
-	
-	
+
+
 	protected static String[] parseOptions(String[] args){
 		List<String>newArgs=new ArrayList<String>();
 		for(String arg: args){
@@ -36,8 +36,8 @@ public abstract class Application implements Runnable {
 		}
 		return newArgs.toArray(new String[newArgs.size()]);
 	}
-	
-	
+
+
 	protected static void parseArg(String arg){
 		if("-v".equals(arg) || "--verbose".equals(arg)){
 			verbose=true;
@@ -50,31 +50,52 @@ public abstract class Application implements Runnable {
 			localPort=Integer.parseInt(arg.split("=")[1]);
 		}
 	}
-	
-	
-	
 
-	static long decode(byte[]data, int start){
-		long result = (data[start+3] & 0xFF)<<24
-		             |(data[start+2] & 0xFF)<<16
-					 |(data[start+1] & 0xFF)<<8
-					 |(data[start] & 0xFF);
+	static int decode(final byte[]data) {
+		return decode(data, 0);
+	}
+
+	static int decode(final byte[]data, final int start) {
+		if(data.length != Integer.BYTES)
+			throw new IllegalArgumentException("Data to decode should be 4-bytes long.");
+		int result = 0;
+		for (int i = 0; i < Integer.BYTES; i++) {
+			result <<= Byte.SIZE;
+			result |= (data[i] & 0xFF);
+		}
 		return result;
 	}
-	
-	static byte[]encode(long value){
-		byte m4= (byte) (value>>24 );
-		byte m3=(byte)(value>>16);
-		byte m2=(byte)(value>>8);
-		byte m1=(byte)(value);
-		return new byte[]{m1,m2,m3,m4};
+
+	static long decode64(final byte[] data) {
+		return decode64(data, 0);
 	}
-	
-	static byte[]encode64(long value){
-		byte m4= (byte) (value>>24 );
-		byte m3=(byte)(value>>16);
-		byte m2=(byte)(value>>8);
-		byte m1=(byte)(value);
-		return new byte[]{m1,m2,m3,m4,0,0,0,0};
+
+	static long decode64(final byte[] data, final int start) {
+		if(data.length != Long.BYTES)
+			throw new IllegalArgumentException("Data to decode should be 8-bytes long.");
+		long result = 0;
+		for (int i = 0; i < Long.BYTES; i++) {
+			result <<= Byte.SIZE;
+			result |= (data[i] & 0xFF);
+		}
+		return result;
+	}
+
+	static byte[] encode(int value) {
+		final byte[] result = new byte[Integer.BYTES];
+		for(int i = (Integer.BYTES - 1); i >= 0; i--) {
+			result[i] = (byte)(value & 0xFF);
+			value >>= Byte.SIZE;
+		}
+		return result;
+	}
+
+	static byte[] encode64(long value) {
+		final byte[] result = new byte[Long.BYTES];
+		for(int i = (Long.BYTES - 1); i >= 0; i--) {
+			result[i] = (byte)(value & 0xFF);
+			value >>= Byte.SIZE;
+		}
+		return result;
 	}
 }

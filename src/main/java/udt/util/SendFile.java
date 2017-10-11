@@ -72,11 +72,6 @@ public class SendFile extends Application{
 
 	}
 
-	@Override
-	public void configure(){
-		super.configure();
-	}
-
 	public void run(){
 		configure();
 		try{

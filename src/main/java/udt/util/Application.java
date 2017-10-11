@@ -13,7 +13,7 @@ public abstract class Application implements Runnable {
 
 	protected static int localPort=-1;
 
-	public void configure(){
+	public static void configure(){
 		if(verbose){
 			Logger.getLogger("udt").setLevel(Level.INFO);
 		}
